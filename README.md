@@ -15,8 +15,20 @@
 
 # 아키텍쳐
 
-> Blockquotes can also be nested...
->
-> > ...by using additional greater-than signs right next to each other...
-> >
-> > > ...or with spaces between arrows.
+1. Global
+   /
+   /join
+   /login
+   /search
+
+2. User
+   /users/:id
+   /user/logout
+   /users/edit
+   /users/delete
+
+3. Video
+   /videos/:id
+   /videos/:id/edit
+   /videos/:id/delete
+   /videos/upload
