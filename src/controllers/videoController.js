@@ -1,10 +1,8 @@
-export const trending = (req, res) => res.send('homepage for videos');
+export const trending = (req, res) => res.render('home', { pageTitle: 'Home' });
 
-export const watch = (req, res) => {
-  return res.send('Watch');
-};
+export const watch = (req, res) => res.render('watch', { pageTitle: 'Watch' });
 
-export const edit = (req, res) => res.send('edit Video');
+export const edit = (req, res) => res.render('edit', { pageTitle: 'Edit' });
 
 export const search = (req, res) => res.send('search Video');
 
