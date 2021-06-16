@@ -66,8 +66,10 @@ export const postLogin = async (req, res) => {
       errorMessage: 'Wrong password',
     });
   }
+
   req.session.loggedIn = true;
   req.session.user = user;
+
   return res.redirect('/');
 };
 
@@ -80,6 +82,7 @@ export const startGithubLogin = (req, res) => {
   };
   const params = new URLSearchParams(config).toString();
   const redirectUrl = `${baseUrl}?${params}`;
+
   return res.redirect(redirectUrl);
 };
 
@@ -129,6 +132,7 @@ export const finishGithubLogin = async (req, res) => {
     }
 
     let user = await User.findOne({ email: emailObj.email });
+
     if (!user) {
       user = await User.create({
         avatarUrl: userData.avatar_url,
@@ -140,8 +144,10 @@ export const finishGithubLogin = async (req, res) => {
         loaction: userData.location,
       });
     }
+
     req.session.loggedIn = true;
     req.session.user = user;
+
     return res.redirect('/');
   } else {
     return res.redirect('/login');
@@ -161,8 +167,88 @@ export const getEdit = (req, res) => {
   });
 };
 
-export const postEdit = (req, res) => {
-  return res.render('edit-profile');
+export const postEdit = async (req, res) => {
+  const {
+    session: {
+      user: {
+        _id: sessionId,
+        email: sessionEmail,
+        username: sessionUsername,
+        avatarUrl: sessionAvatarUrl,
+      },
+    },
+    body: { name, email, username, location },
+    file,
+  } = req;
+  let compareArray = [];
+
+  console.log(file);
+
+  if (sessionEmail !== email) {
+    compareArray.push({ email });
+  }
+
+  if (sessionUsername !== username) {
+    compareArray.push({ username });
+  }
+
+  if (compareArray.length > 0) {
+    const user = await User.findOne({ $or: compareArray });
+    if (user && String(user._id) !== sessionId) {
+      return res.status(400).render('edit-profile', {
+        pageTitle: 'Edit Profile',
+        errorMessage: 'This username/email is already taken.',
+      });
+    }
+  }
+
+  const updateUser = await User.findByIdAndUpdate(
+    sessionId,
+    {
+      avatarUrl: file ? file.path : sessionAvatarUrl,
+      name,
+      email,
+      username,
+      location,
+    },
+    { new: true }
+  );
+
+  req.session.user = updateUser;
+  return res.redirect('/users/edit');
+};
+
+export const getChangePassword = (req, res) => {
+  return res.render('users/change-password', { pageTitle: 'Change Password' });
+};
+
+export const postChangePassword = async (req, res) => {
+  const {
+    session: {
+      user: { _id: sessionId },
+    },
+    body: { old, password, password2 },
+  } = req;
+  const user = await User.findById(sessionId);
+  const ok = await bcrypt.compare(old, user.password);
+
+  if (!ok) {
+    return res.status(400).render('users/change-password', {
+      pageTitle: 'Change Password',
+      errorMessage: 'The current password is incorrect',
+    });
+  }
+
+  if (password !== password2) {
+    return res.status(400).render('users/change-password', {
+      pageTitle: 'Change Password',
+      errorMessage: 'The password does not match the confirmation',
+    });
+  }
+
+  user.password = password;
+  await user.save();
+  return res.redirect('/users/logout');
 };
 
 export const remove = (req, res) => res.send('Delete User');
