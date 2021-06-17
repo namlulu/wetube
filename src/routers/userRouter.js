@@ -18,6 +18,9 @@ import {
 
 const userRouter = express.Router();
 
+userRouter.get('/github/start', publicOnlyMiddleware, startGithubLogin);
+userRouter.get('/github/finish', publicOnlyMiddleware, finishGithubLogin);
+
 userRouter.get('/logout', protectorMiddleware, logout);
 userRouter
   .route('/edit')
@@ -29,9 +32,9 @@ userRouter
   .all(protectorMiddleware)
   .get(getChangePassword)
   .post(postChangePassword);
+
 userRouter.get('/delete', remove);
-userRouter.get('/github/start', publicOnlyMiddleware, startGithubLogin);
-userRouter.get('/github/finish', publicOnlyMiddleware, finishGithubLogin);
-userRouter.get(':id', see);
+
+userRouter.get('/:id', see);
 
 export default userRouter;
