@@ -1,10 +1,14 @@
 extends base.pug
 include mixins/video
 
-block content 
-    form(method="GET")
-        input(type="text", name="keyword", placeholder="Search by title")
-        input(type="submit" value="Search Now") 
+block content
+    form(method="GET").search__form
+        input(placeholder="Search by title",name="keyword", type="text")
+        button
+            i.fas.fa-search
 
-    each video in videos 
-        +video(video)
+    div.video-grid
+        each video in videos 
+            +video(video)
+        else
+            span.empty__message No videos found
