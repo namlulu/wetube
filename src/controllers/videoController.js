@@ -176,3 +176,13 @@ export const createComment = async (req, res) => {
 
   return res.status(201).json({ newCommentId: comment._id });
 };
+
+export const deleteComment = async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+
+  await Comment.findByIdAndDelete(id);
+
+  return res.sendStatus(200);
+};

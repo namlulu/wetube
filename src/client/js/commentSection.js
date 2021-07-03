@@ -1,5 +1,8 @@
+import { async } from 'regenerator-runtime';
+
 const videoContainer = document.getElementById('videoContainer');
 const form = document.getElementById('commentForm');
+const delBtns = document.querySelectorAll('.delBtn');
 
 const addComment = (text, id) => {
   const videoComment = document.querySelector('.video__comments ul');
@@ -15,10 +18,15 @@ const addComment = (text, id) => {
 
   const delBtn = document.createElement('span');
   delBtn.innerText = ' ❌';
+  delBtn.addEventListener('click', handleClick);
 
   newComment.appendChild(icon);
   newComment.appendChild(span);
   videoComment.prepend(newComment);
+};
+
+const deleteComment = (element) => {
+  element.remove();
 };
 
 const handleSubmit = async (event) => {
@@ -45,6 +53,19 @@ const handleSubmit = async (event) => {
     addComment(text, newCommentId);
   }
 };
+
+const handleClick = async (event) => {
+  const commentId = event.target.parentNode.dataset.id;
+  const res = await fetch(`/api/comment/${commentId}/delete`);
+
+  if (res.status == 200) {
+    deleteComment(event.target.parentNode);
+  }
+};
+
+delBtns.forEach((item) => {
+  item.addEventListener('click', handleClick);
+});
 
 if (form) {
   form.addEventListener('submit', handleSubmit);
