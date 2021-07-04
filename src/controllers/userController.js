@@ -220,10 +220,15 @@ export const postEdit = async (req, res) => {
     }
   }
 
+  const isHeroku = process.env.NODE_ENV === 'production';
   const updateUser = await User.findByIdAndUpdate(
     sessionId,
     {
-      avatarUrl: file ? file.location : sessionAvatarUrl,
+      avatarUrl: file
+        ? isHeroku
+          ? file.location
+          : file.path
+        : sessionAvatarUrl,
       name,
       email,
       username,
