@@ -202,8 +202,6 @@ export const postEdit = async (req, res) => {
   } = req;
   let compareArray = [];
 
-  console.log(file);
-
   if (sessionEmail !== email) {
     compareArray.push({ email });
   }

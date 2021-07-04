@@ -27,8 +27,6 @@ export const postUpload = async (req, res) => {
     files: { video, thumb },
   } = req;
 
-  console.log(req.files);
-
   try {
     const newVideo = await Video.create({
       title,
