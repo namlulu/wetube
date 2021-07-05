@@ -60,9 +60,6 @@ export const watch = async (req, res) => {
     return res.render('404', { pageTitle: 'Video not found' });
   }
 
-  console.log(req.session);
-  console.log(video.comments);
-
   return res.render('watch', { pageTitle: video.title, video });
 };
 

@@ -2,7 +2,7 @@ extends base
 
 block content
     div#videoContainer(data-id=video._id)
-        if !loggedInUser.isHeroku
+        if !isHeroku
             video(src="/" + video.fileUrl)
         else 
             video(src=video.fileUrl)
