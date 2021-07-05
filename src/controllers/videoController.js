@@ -26,16 +26,18 @@ export const postUpload = async (req, res) => {
     body: { title, description, hashtags },
     files: { video, thumb },
   } = req;
+  const isHeroku = process.env.NODE_ENV === 'production';
 
   try {
     const newVideo = await Video.create({
       title,
       description,
       fileUrl: isHeroku ? video[0].location : video[0].path,
-      thumbUrl: isHeroku ? thumb[0].location : video[0].path,
+      thumbUrl: isHeroku ? thumb[0].location : thumb[0].path,
       owner: _id,
       hashtags: Video.formatHashtags(hashtags),
     });
+
     const user = await User.findById(_id);
 
     user.videos.push(newVideo._id);
@@ -57,6 +59,9 @@ export const watch = async (req, res) => {
   if (!video) {
     return res.render('404', { pageTitle: 'Video not found' });
   }
+
+  console.log(req.session);
+  console.log(video.comments);
 
   return res.render('watch', { pageTitle: video.title, video });
 };
@@ -177,8 +182,14 @@ export const createComment = async (req, res) => {
 
 export const deleteComment = async (req, res) => {
   const {
+    session: { user },
     params: { id },
   } = req;
+  const comment = await Comment.findById(id);
+
+  if (String(comment.owner) !== String(user._id)) {
+    return res.status(403).redirect('/');
+  }
 
   await Comment.findByIdAndDelete(id);
 

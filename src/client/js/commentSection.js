@@ -22,6 +22,7 @@ const addComment = (text, id) => {
 
   newComment.appendChild(icon);
   newComment.appendChild(span);
+  newComment.appendChild(delBtns);
   videoComment.prepend(newComment);
 };
 
