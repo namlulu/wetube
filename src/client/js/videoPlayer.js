@@ -103,7 +103,7 @@ const handleMouseLeave = () => {
 };
 
 const handleEnded = () => {
-  const { videoId } = videoContainer.dataset;
+  const { id: videoId } = videoContainer.dataset;
   fetch(`/api/videos/${videoId}/view`, {
     method: 'POST',
   });
