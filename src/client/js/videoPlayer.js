@@ -1,4 +1,5 @@
 const { default: fetch } = require('node-fetch');
+const { async } = require('regenerator-runtime');
 
 const video = document.querySelector('video');
 const playBtn = document.getElementById('play');
@@ -52,17 +53,22 @@ const handleVolumeChange = (event) => {
   video.volume = value;
 };
 
-const formatTime = (seconds) =>
-  new Date(seconds * 1000).toISOString().substr(14, 5);
-
+const formatTime = async (seconds) => {
+  const newDate = new Date(seconds * 1000);
+  return await newDate.toISOString().substr(14, 5);
+};
 const handleLoadedMetadata = () => {
-  totalTime.innerText = formatTime(Math.floor(video.duration));
-  timeline.max = Math.floor(video.duration);
+  formatTime(Math.floor(video.duration)).then((time) => {
+    totalTime.innerText = time;
+    timeline.max = Math.floor(video.duration);
+  });
 };
 
 const handleTimeUpdate = () => {
-  currenTime.innerText = formatTime(Math.floor(video.currentTime));
-  timeline.value = Math.floor(video.currentTime);
+  formatTime(Math.floor(video.currentTime)).then((time) => {
+    currenTime.innerText = time;
+    timeline.value = Math.floor(video.currentTime);
+  });
 };
 
 const handleTimelineChange = (event) => {
