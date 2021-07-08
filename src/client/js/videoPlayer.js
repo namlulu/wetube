@@ -1,5 +1,4 @@
 const { default: fetch } = require('node-fetch');
-const { async } = require('regenerator-runtime');
 
 const video = document.querySelector('video');
 const playBtn = document.getElementById('play');
@@ -53,22 +52,17 @@ const handleVolumeChange = (event) => {
   video.volume = value;
 };
 
-const formatTime = async (seconds) => {
-  const newDate = new Date(seconds * 1000);
-  return await newDate.toISOString().substr(14, 5);
-};
+const formatTime = (seconds) =>
+  new Date(seconds * 1000).toISOString().substr(14, 5);
+
 const handleLoadedMetadata = () => {
-  formatTime(Math.floor(video.duration)).then((time) => {
-    totalTime.innerText = time;
-    timeline.max = Math.floor(video.duration);
-  });
+  totalTime.innerText = formatTime(Math.floor(video.duration));
+  timeline.max = Math.floor(video.duration);
 };
 
 const handleTimeUpdate = () => {
-  formatTime(Math.floor(video.currentTime)).then((time) => {
-    currenTime.innerText = time;
-    timeline.value = Math.floor(video.currentTime);
-  });
+  currenTime.innerText = formatTime(Math.floor(video.currentTime));
+  timeline.value = Math.floor(video.currentTime);
 };
 
 const handleTimelineChange = (event) => {
@@ -118,7 +112,7 @@ const handleEnded = () => {
 playBtn.addEventListener('click', handlePlayClick);
 muteBtn.addEventListener('click', handleMuteClick);
 volumeRange.addEventListener('input', handleVolumeChange);
-video.addEventListener('loadeddata', handleLoadedMetadata);
+video.addEventListener('loadedmetadata', handleLoadedMetadata);
 video.addEventListener('timeupdate', handleTimeUpdate);
 video.addEventListener('ended', handleEnded);
 videoContainer.addEventListener('mousemove', handleMouseMove);
