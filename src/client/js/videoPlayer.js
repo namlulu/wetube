@@ -18,6 +18,7 @@ let controlsTimeout = null;
 let controlsMovementTimeout = null;
 let volumeValue = 0.5;
 video.volume = volumeValue;
+video.src = video.dataset.id;
 
 const handlePlayClick = (e) => {
   if (video.paused) {
