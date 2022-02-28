@@ -40,4 +40,13 @@ app.use('/users', userRouter);
 app.use('/videos', videoRouter);
 app.use('/api', apiRouter);
 
+app.get('/cloud', (req, res, next) => {
+  setTimeout(() => {
+    res.render('cloudFront', {
+      pageTitle: 'cloudFront',
+      rand: Math.random() * 10,
+    });
+  }, 1000);
+});
+
 export default app;
