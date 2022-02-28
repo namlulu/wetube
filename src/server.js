@@ -42,6 +42,7 @@ app.use('/api', apiRouter);
 
 app.get('/cloud', (req, res, next) => {
   setTimeout(() => {
+    res.set('Cache-control', `public, max-age=10`);
     res.render('cloudFront', {
       pageTitle: 'cloudFront',
       rand: Math.random() * 10,
